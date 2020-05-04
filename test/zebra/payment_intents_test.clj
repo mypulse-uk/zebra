@@ -3,7 +3,9 @@
             [clojure.string :as str]
             [zebra.payment-methods :as payment-methods]
             [zebra.payment-intents :as payment-intent]
+            [webdriver.core :refer :all]
             [zebra.helpers.constants :refer [api-key tokens]]))
+
 
 (deftest create-payment-intent
   (let [payment-intent (payment-intent/create
@@ -63,19 +65,31 @@
                           :payment_method       (:id payment-method)
                           :return_url           "http://www.google.com"}
 
-                         api-key)]
+                         api-key)
+
+        _               (do
+                          (def driver (create-driver {:driver-type :firefox :driver-args ["--headless"]}))
+                          (to driver (:url (:redirect_to_url (:next_action payment-intent))))
+                          (wait-for-element driver :name "__privateStripeFrame4")
+                          (iframe driver "__privateStripeFrame4")
+                          (wait-for-element driver :name "stripe-challenge-frame")
+                          (iframe driver "stripe-challenge-frame")
+                          (send-keys (wait-for-element driver :xpath "//*[@id=\"test-source-authorize-3ds\"]") (. org.openqa.selenium.Keys ENTER)))
+        _                 (Thread/sleep 500)
+       payment-intent2 (payment-intent/retrieve (:id payment-intent) api-key)]
+
 
     (testing "should create a valid payment intent"
-      (is (str/starts-with? (:id payment-intent) "pi_"))
-      (is (= (:object payment-intent) "payment_intent"))
-      (is (= (:status payment-intent) "requires_action"))
-      (is (= (:confirmation_method payment-intent) "automatic"))
-      (is (= (:payment_method_types payment-intent) ["card"]))
-      (is (vector? (:payment_method_types payment-intent)))
-      (is (= (:amount payment-intent) 1234))
-      (is (= (:currency payment-intent) "gbp"))
-      (is (= (:payment_method payment-intent) (:id payment-method)))
-      (is (= (:type (:next_action payment-intent)) "redirect_to_url")))))
+      (is (str/starts-with? (:id payment-intent2) "pi_"))
+      (is (= (:object payment-intent2) "payment_intent"))
+      (is (not (= (:status payment-intent2) "requires_action")))
+      (is (= (:confirmation_method payment-intent2) "automatic"))
+      (is (= (:payment_method_types payment-intent2) ["card"]))
+      (is (vector? (:payment_method_types payment-intent2)))
+      (is (= (:amount payment-intent2) 1234))
+      (is (= (:currency payment-intent2) "gbp"))
+      (is (= (:payment_method payment-intent2) (:id payment-method)))
+      (is (= (:type (:next_action payment-intent2)) nil)))))
 
 (deftest retrieve-payment-intent
   (let [payment-intent (payment-intent/create
