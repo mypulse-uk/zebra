@@ -65,31 +65,31 @@
                           :payment_method       (:id payment-method)
                           :return_url           "http://www.google.com"}
 
-                         api-key)
+                         api-key)]
 
-        _               (do
-                          (def driver (create-driver {:driver-type :firefox :driver-args ["--headless"]}))
-                          (to driver (:url (:redirect_to_url (:next_action payment-intent))))
-                          (wait-for-element driver :name "__privateStripeFrame4")
-                          (iframe driver "__privateStripeFrame4")
-                          (wait-for-element driver :name "stripe-challenge-frame")
-                          (iframe driver "stripe-challenge-frame")
-                          (send-keys (wait-for-element driver :xpath "//*[@id=\"test-source-authorize-3ds\"]") (. org.openqa.selenium.Keys ENTER)))
-        _                 (Thread/sleep 500)
-       payment-intent2 (payment-intent/retrieve (:id payment-intent) api-key)]
+        (do
+          (def driver (create-driver {:driver-type :firefox :driver-args ["--headless"]}))
+          (to driver (:url (:redirect_to_url (:next_action payment-intent))))
+          (wait-for-element driver :name "__privateStripeFrame4")
+          (iframe driver "__privateStripeFrame4")
+          (wait-for-element driver :name "stripe-challenge-frame")
+          (iframe driver "stripe-challenge-frame")
+          (send-keys (wait-for-element driver :xpath "//*[@id=\"test-source-authorize-3ds\"]") (. org.openqa.selenium.Keys ENTER)))
+          (Thread/sleep 500)
 
-
-    (testing "should create a valid payment intent"
-      (is (str/starts-with? (:id payment-intent2) "pi_"))
-      (is (= (:object payment-intent2) "payment_intent"))
-      (is (not (= (:status payment-intent2) "requires_action")))
-      (is (= (:confirmation_method payment-intent2) "automatic"))
-      (is (= (:payment_method_types payment-intent2) ["card"]))
-      (is (vector? (:payment_method_types payment-intent2)))
-      (is (= (:amount payment-intent2) 1234))
-      (is (= (:currency payment-intent2) "gbp"))
-      (is (= (:payment_method payment-intent2) (:id payment-method)))
-      (is (= (:type (:next_action payment-intent2)) nil)))))
+       (let [payment-intent-after-auth (payment-intent/retrieve (:id payment-intent) api-key)]
+         (testing "should create a valid payment intent"
+           (is (str/starts-with? (:id payment-intent-after-auth) "pi_"))
+           (is (= (:object payment-intent-after-auth) "payment_intent"))
+           (is (not (= (:status payment-intent-after-auth) "requires_action")))
+           (is (= (:confirmation_method payment-intent-after-auth) "automatic"))
+           (is (= (:payment_method_types payment-intent-after-auth) ["card"]))
+           (is (vector? (:payment_method_types payment-intent-after-auth)))
+           (is (= (:amount payment-intent-after-auth) 1234))
+           (is (= (:currency payment-intent-after-auth) "gbp"))
+           (is (= (:payment_method payment-intent-after-auth) (:id payment-method)))
+           (is (= (:type (:next_action payment-intent-after-auth)) nil))))
+    ))
 
 (deftest retrieve-payment-intent
   (let [payment-intent (payment-intent/create
