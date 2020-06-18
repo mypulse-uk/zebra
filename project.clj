@@ -5,7 +5,9 @@
             :url  "https://opensource.org/licenses/MIT"}
   :dependencies [[org.clojure/clojure "1.9.0"]
                  [com.stripe/stripe-java "19.12.0"]
-                 [webdriver "0.15.0"]]
+                 [webdriver "0.15.0"]
+                 [org.seleniumhq.selenium/htmlunit-driver "2.41.0"]]
+
   :plugins [[jonase/eastwood "0.2.5"]
             [lein-eftest "0.5.3"]
             [lein-changelog "0.3.2"]
