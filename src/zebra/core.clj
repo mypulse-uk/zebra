@@ -6,8 +6,11 @@
     [zebra.invoices :as invoices]
     [zebra.payment-intents :as payment-intents]
     [zebra.payment-methods :as payment-methods]
+    [zebra.prices :as prices]
+    [zebra.products :as products]
     [zebra.refunds :as refunds]
-    [zebra.sources :as sources])
+    [zebra.sources :as sources]
+    [zebra.subscriptions :as subscriptions])
   (:import
     (com.stripe
       Stripe)))
@@ -127,3 +130,33 @@
 (defn retrieve-refund
   [id api-key]
   (refunds/retrieve id api-key))
+
+;; Prices
+
+(defn create-price
+  [params api-key]
+  (prices/create params api-key))
+
+(defn retrieve-price
+  [id api-key]
+  (prices/retrieve id api-key))
+
+;; Products
+
+(defn create-product
+  [params api-key]
+  (products/create params api-key))
+
+(defn retrieve-product
+  [id api-key]
+  (products/retrieve id api-key))
+
+;; Subscriptions
+
+(defn create-subscription
+  [params api-key]
+  (subscriptions/create params api-key))
+
+(defn list-subscriptions
+  [params api-key]
+  (subscriptions/list params api-key))
