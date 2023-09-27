@@ -15,8 +15,8 @@
   [^Subscription subscription]
   {:id                   (.getId subscription)
    :customer             (.getCustomer subscription)
-   :cancelled-at         (.getCancelAt subscription)
-   :created              (.getCreated subscription)
+   :cancelled-at         (.getCanceledAt subscription)
+   :created-at           (.getCreated subscription)
    :current-period-start (.getCurrentPeriodStart subscription)
    :current-period-end   (.getCurrentPeriodEnd subscription)
    :status               (.getStatus subscription)

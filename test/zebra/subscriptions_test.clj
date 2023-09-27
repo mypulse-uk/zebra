@@ -24,11 +24,21 @@
                               :recurring   {:interval "day"}
                               :product     product-id} api-key)
         price-id (:id price)
+        key "some-field"
+        value "some value"
         subscription (subscriptions/create {:customer               customer-id
                                             :default_payment_method (:id payment-method)
-                                            :items                  [{:price price-id}]} api-key)]
+                                            :items                  [{:price price-id}]
+                                            :metadata               {key value}} api-key)]
     (testing "should be a valid subscription"
-      (is (some? (:id subscription))))))
+      (is (some? (:id subscription)))
+      (is (= customer-id (:customer subscription)))
+      (is (nil? (:cancelled-at subscription)))
+      (is (some? (:created-at subscription)))
+      (is (some? (:current-period-start subscription)))
+      (is (some? (:current-period-end subscription)))
+      (is (= "active" (:status subscription)))
+      (is (= value (get-in subscription [:metadata key]))))))
 
 (deftest list-subscriptions
   (let [customer (customers/create api-key)
