@@ -1,5 +1,6 @@
 (ns zebra.products
-  (:refer-clojure :exclude [list update])
+  (:require
+    [zebra.utils :refer [transform-params]])
   (:import
     (com.stripe.model
       Product)
@@ -15,9 +16,9 @@
    :metadata (.getMetadata product)})
 
 (defn create
-  [^Map params api-key]
+  [params api-key]
   (product->map
-    (Product/create params
+    (Product/create ^Map (transform-params params)
                     (-> (RequestOptions/builder) (.setApiKey api-key) .build))))
 
 (defn retrieve
