@@ -37,6 +37,7 @@
       (is (some? (:created-at subscription)))
       (is (some? (:current-period-start subscription)))
       (is (some? (:current-period-end subscription)))
+      (is (some? (:plan subscription)))
       (is (= "active" (:status subscription)))
       (is (= value (get-in subscription [:metadata key]))))))
 
