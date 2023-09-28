@@ -19,6 +19,7 @@
    :created-at           (.getCreated subscription)
    :current-period-start (.getCurrentPeriodStart subscription)
    :current-period-end   (.getCurrentPeriodEnd subscription)
+   :plan                 (.getPlan subscription)
    :status               (.getStatus subscription)
    :metadata             (.getMetadata subscription)})
 
