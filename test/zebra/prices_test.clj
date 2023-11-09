@@ -1,8 +1,8 @@
 (ns zebra.prices-test
   (:require
     [clojure.test :refer :all]
-    [zebra.prices :as prices]
     [zebra.helpers.constants :refer [api-key]]
+    [zebra.prices :as prices]
     [zebra.products :as products]))
 
 (deftest create-price

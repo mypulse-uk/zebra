@@ -1,8 +1,8 @@
 (ns zebra.products-test
   (:require
     [clojure.test :refer :all]
-    [zebra.products :as products]
-    [zebra.helpers.constants :refer [api-key]]))
+    [zebra.helpers.constants :refer [api-key]]
+    [zebra.products :as products]))
 
 (deftest create-product
   (let [product-name (str "test_product_" (random-uuid))
