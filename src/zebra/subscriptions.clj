@@ -48,10 +48,11 @@
                          (-> (RequestOptions/builder) (.setApiKey api-key) .build))))
 
 (defn retrieve
-  [id api-key]
-  (subscription->map
-    (Subscription/retrieve id
-                           (-> (RequestOptions/builder) (.setApiKey api-key) .build))))
+  ([id api-key] (retrieve id {} api-key))
+  ([id params api-key]
+   (subscription->map
+     (Subscription/retrieve ^String id ^Map (transform-params params)
+                            (-> (RequestOptions/builder) (.setApiKey api-key) .build)))))
 
 (defn list
   ([params api-key]

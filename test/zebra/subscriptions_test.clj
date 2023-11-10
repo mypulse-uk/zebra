@@ -116,6 +116,44 @@
     (testing "should retrieve subscription"
       (is (= (:id created-subscription) (:id subscription))))))
 
+(deftest retrieve-subscription-with-params
+  (let [customer (customers/create api-key)
+        customer-id (:id customer)
+        key "some-field"
+        value "some value"
+        payment-method (payment-methods/create {:type "card"
+                                                :card {:number    "4242424242424242"
+                                                       :exp_month "7"
+                                                       :exp_year  "2026"
+                                                       :cvc       "314"}} api-key)
+        _attached-payment-method (customers/attach-payment-method customer-id (:id payment-method) api-key)
+        product (products/create {:name (str "test_product_" (random-uuid))} api-key)
+        product-id (:id product)
+        amount 999
+        currency "gbp"
+        interval "day"
+        price (prices/create {:unit_amount amount
+                              :currency    currency
+                              :recurring   {:interval interval}
+                              :product     product-id
+                              :metadata    {key value}} api-key)
+        price-id (:id price)
+        expand-param ["latest_invoice.payment_intent"]
+        created-subscription (subscriptions/create {:customer               customer-id
+                                                    :default_payment_method (:id payment-method)
+                                                    :payment_behavior       "default_incomplete"
+                                                    :items                  [{:price price-id}]
+                                                    :expand                 expand-param
+                                                    :metadata               {key value}} api-key)
+        subscription (subscriptions/retrieve (:id created-subscription) {:expand expand-param} api-key)]
+
+    (testing "should retrieve subscription"
+      (is (= (:id created-subscription) (:id subscription))))
+
+    (testing "should include latest-invoice"
+      (is (= (get-in created-subscription [:latest-invoice :id])
+             (get-in subscription [:latest-invoice :id]))))))
+
 (deftest list-subscriptions
   (let [customer (customers/create api-key)
         customer-id (:id customer)

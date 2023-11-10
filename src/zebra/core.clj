@@ -158,8 +158,10 @@
   (subscriptions/create params api-key))
 
 (defn retrieve-subscription
-  [id api-key]
-  (subscriptions/retrieve id api-key))
+  ([id params api-key]
+   (subscriptions/retrieve id params api-key))
+  ([id api-key]
+   (retrieve-subscription id api-key)))
 
 (defn list-subscriptions
   [params api-key]
