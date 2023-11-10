@@ -2,7 +2,6 @@
   (:refer-clojure :exclude [list])
   (:require
     [zebra.payment-intents :refer [payment-intent->map]]
-    [zebra.plans :refer [plan->map]]
     [zebra.utils :refer [transform-params]])
   (:import
     (com.stripe.model
@@ -21,7 +20,6 @@
           :created-at           (.getCreated subscription)
           :current-period-start (.getCurrentPeriodStart subscription)
           :current-period-end   (.getCurrentPeriodEnd subscription)
-          :plan                 (plan->map (.getPlan subscription))
           :status               (.getStatus subscription)
           :metadata             (.getMetadata subscription)}
          (when-let [latest-invoice (.getLatestInvoiceObject subscription)]

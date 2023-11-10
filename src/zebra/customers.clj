@@ -2,7 +2,8 @@
   (:refer-clojure :exclude [list update])
   (:require
     [zebra.payment-methods :refer [payment-method->map]]
-    [zebra.sources :refer [source->map]])
+    [zebra.sources :refer [source->map]]
+    [zebra.utils :refer [transform-params]])
   (:import
     (com.stripe.model
       Customer
@@ -38,7 +39,8 @@
 (defn attach-source
   [customer-id source-id api-key]
   (let [opts (-> (RequestOptions/builder) (.setApiKey api-key) .build)
-        customer (Customer/retrieve customer-id opts)
+        customer-params ^Map (transform-params {:expand ["sources"]})
+        customer (Customer/retrieve ^String customer-id customer-params opts)
         sources (.getSources customer)]
     (source->map
       (.create sources {"source" source-id}

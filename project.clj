@@ -9,7 +9,7 @@
   :license {:name "The MIT License"
             :url  "https://opensource.org/licenses/MIT"}
   :dependencies [[org.clojure/clojure "1.11.1"]
-                 [com.stripe/stripe-java "19.12.0"]]
+                 [com.stripe/stripe-java "20.120.0"]]
   :plugins [[lein-cloverage "1.2.3"]
             [lein-shell "0.5.0"]
             [lein-ancient "0.7.0"]

@@ -48,18 +48,6 @@
       (is (= "incomplete" (:status subscription)))
       (is (= value (get-in subscription [:metadata key])))
 
-      (testing "should include plan"
-        (let [plan (:plan subscription)]
-          (is (some? plan))
-          (is (str/starts-with? (:id plan) "price_"))
-          (is (true? (:active plan)))
-          (is (= amount (:amount plan)))
-          (is (= currency (:currency plan)))
-          (is (some? (:created-at plan)))
-          (is (= interval (:interval plan)))
-          (is (= product-id (:product-id plan)))
-          (is (= value (get-in plan [:metadata key])))))
-
       (testing "should include latest-invoice"
         (let [invoice (:latest-invoice subscription)]
           (is (some? invoice))
