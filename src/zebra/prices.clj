@@ -3,7 +3,8 @@
     [zebra.utils :refer [transform-params]])
   (:import
     (com.stripe.model
-      Price)
+      Price
+      PriceSearchResult)
     (com.stripe.net
       RequestOptions)
     (java.util
@@ -17,6 +18,12 @@
    :product     (.getProduct price)
    :metadata    (.getMetadata price)})
 
+(defn prices->map
+  [^PriceSearchResult result]
+  {:has-more (.getHasMore result)
+   :prices   (map price->map
+                  (.getData result))})
+
 (defn create
   [params api-key]
   (price->map
@@ -28,3 +35,11 @@
   (price->map
     (Price/retrieve id
                     (-> (RequestOptions/builder) (.setApiKey api-key) .build))))
+
+(defn search
+  ([params api-key]
+   (prices->map
+     (Price/search ^Map (transform-params params)
+                   ^RequestOptions (-> (RequestOptions/builder) (.setApiKey api-key) .build))))
+  ([api-key]
+   (search {} api-key)))
