@@ -47,6 +47,12 @@
     (Subscription/create ^Map (transform-params params)
                          (-> (RequestOptions/builder) (.setApiKey api-key) .build))))
 
+(defn retrieve
+  [id api-key]
+  (subscription->map
+    (Subscription/retrieve id
+                           (-> (RequestOptions/builder) (.setApiKey api-key) .build))))
+
 (defn list
   ([params api-key]
    (subscriptions->map
