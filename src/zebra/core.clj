@@ -141,6 +141,10 @@
   [id api-key]
   (prices/retrieve id api-key))
 
+(defn search-price
+  [params api-key]
+  (prices/search params api-key))
+
 ;; Products
 
 (defn create-product
