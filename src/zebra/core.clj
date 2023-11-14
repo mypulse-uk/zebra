@@ -3,6 +3,7 @@
     [zebra.charges :as charges]
     [zebra.customers :as customers]
     [zebra.ephemeral-keys :as ephemeral-keys]
+    [zebra.invoice-items :as invoice-items]
     [zebra.invoices :as invoices]
     [zebra.payment-intents :as payment-intents]
     [zebra.payment-methods :as payment-methods]
@@ -120,6 +121,18 @@
 (defn finalise-invoice
   [id api-key]
   (invoices/finalise id api-key))
+
+;; Invoice Items
+
+(defn create-invoice-item
+  ([params api-key]
+   (invoice-items/create params api-key))
+  ([api-key]
+   (create-invoice-item {} api-key)))
+
+(defn retrieve-invoice-item
+  [id api-key]
+  (invoice-items/retrieve id api-key))
 
 ;; Refunds
 
